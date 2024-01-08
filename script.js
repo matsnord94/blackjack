@@ -7,6 +7,7 @@ for (let i = 1; i <= 13; i++) {
     let img = new Image();
     img.src = `\images/${i}_of_clubs.png`;
     imageArray.push(img);
+    
 }
 
 // spades
@@ -44,69 +45,76 @@ let hitResult;
 
 function translateNumber(number)
 {
-    for (let i = 0; i < 13; i++) 
-    {
+    // for (let i = 0; i < 13; i++) 
+    // {
 
-        let a = 0 + i;
-        let b = 13 + i;
-        let c = 26 + i;
-        let d = 39 + i;
-        if(number === a  || number === b || number === c || number === d )
-        {
-            if(i === 0)
-            {
-                return 11;
-            }
+    //     let a = 0 + i;
+    //     let b = 13 + i;
+    //     let c = 26 + i;
+    //     let d = 39 + i;
+    //     if(number === a  || number === b || number === c || number === d )
+    //     {
+    //         if(i === 0)
+    //         {
+    //             return 11;
+    //         }
     
-            else if(i === 1) 
-            {
-                return 2;
-            }
-            else if(i === 2) 
-            {
-                return 3;
-            }
-            else if(i === 3) 
-            {
-                return 4;
-            }
-            else if(i === 4) 
-            {
-                return 5;
-            }
-            else if(i === 5) 
-            {
-                return 6;
-            }
-            else if(i === 6) 
-            {
-                return  7;
-            }
-            else if(i === 7) 
-            {
-                return  8;
-            }
-            else if(i === 8) 
-            {
-                return 9;
-            }
-            else if(i === 9 || i === 10 || i === 11 || i === 12) 
-            {
-               return 10;
-            }
+    //         else if(i === 1) 
+    //         {
+    //             return 2;
+    //         }
+    //         else if(i === 2) 
+    //         {
+    //             return 3;
+    //         }
+    //         else if(i === 3) 
+    //         {
+    //             return 4;
+    //         }
+    //         else if(i === 4) 
+    //         {
+    //             return 5;
+    //         }
+    //         else if(i === 5) 
+    //         {
+    //             return 6;
+    //         }
+    //         else if(i === 6) 
+    //         {
+    //             return  7;
+    //         }
+    //         else if(i === 7) 
+    //         {
+    //             return  8;
+    //         }
+    //         else if(i === 8) 
+    //         {
+    //             return 9;
+    //         }
+    //         else if(i === 9 || i === 10 || i === 11 || i === 12) 
+    //         {
+    //            return 10;
+    //         }
           
             
+    //     }
+        
+    // }
+    const cardValues = [11,2,3,4,5,6,7,8,9,10,10,10,10]
+    for (let i = 0; i < 4; i++) {
+        let baseIndex = i*13;
+        if (number >= baseIndex && number < baseIndex + 13){
+            return cardValues[number - baseIndex]
         }
         
     }
-
 
 }
 
 function hit() 
 {
     return new Promise((resolve) => {
-        let randomNumber = getRandomNumber(1, 52);
+        let randomNumber = getRandomNumber(0, 51);
         console.log(randomNumber);
         resolve(randomNumber);
     });
@@ -134,7 +142,7 @@ while(dealerSum < 17){
     dealerSum += translatedNumber;
     antalDealerHits++;
     let dealerImage = document.getElementById(`dealerContainer${antalDealerHits}`)
-    dealerImage.src = imageArray[dealerHit-1].src;
+    dealerImage.src = imageArray[dealerHit].src;
     console.log(dealerHit);
     document.getElementById('dealerSum').textContent = `Total: ${dealerSum}`;
     if(dealerSum > 21){
@@ -168,7 +176,7 @@ async function funcHitButton(){
     const translatedNumber = translateNumber(hitResult);
     playerSum += translatedNumber;
     let playerImage = document.getElementById(`playerContainer${antalHits}`)
-    playerImage.src = imageArray[hitResult-1].src;
+    playerImage.src = imageArray[hitResult].src;
     document.getElementById('playerSum').textContent = `Total: ${playerSum}`;
     if(playerSum > 21){
         playerBust = true;
@@ -176,6 +184,11 @@ async function funcHitButton(){
         // resetButton.style.display = 'block';
         checkGameResult();
         }
+
+    else if (playerSum === 21){
+        playerWin = true;
+        checkGameResult();
+    }
    
     }
 }
@@ -217,7 +230,7 @@ hitButton.addEventListener('click', funcHitButton);
 
 let stayButton = document.getElementById('stay');
 stayButton.addEventListener('click', function(){
-    if(!playerBust){
+    if(!playerBust && !playerStay && !playerWin){
         playerStay = true;
         console.log("Player decided to stay, triggering dealer's turn");
         dealerTurn();
